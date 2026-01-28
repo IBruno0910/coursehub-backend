@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const userService = require("../services/user.service");
 
 async function register(req, res) {
+  console.log("➡️ REGISTER HIT");
+  console.log("BODY:", req.body);
   try {
     const { email, password } = req.body;
 
