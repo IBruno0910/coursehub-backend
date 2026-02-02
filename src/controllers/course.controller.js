@@ -1,5 +1,28 @@
 const courseService = require("../services/course.service");
 
+// Público
+async function getPublishedCourses(req, res) {
+  try {
+    const courses = await courseService.getPublishedCourses();
+    return res.json(courses);
+  } catch (error) {
+    console.error("Get published courses error:", error);
+    return res.status(500).json({ message: "Error del servidor" });
+  }
+}
+
+// Admin
+async function getAllCourses(req, res) {
+  try {
+    const courses = await courseService.getAllCourses();
+    return res.json(courses);
+  } catch (error) {
+    console.error("Get all courses error:", error);
+    return res.status(500).json({ message: "Error del servidor" });
+  }
+}
+
+// Admin
 async function createCourse(req, res) {
   try {
     const { title, description, published } = req.body;
@@ -22,17 +45,26 @@ async function createCourse(req, res) {
   }
 }
 
-async function getCourses(req, res) {
+async function getCourseById(req, res) {
   try {
-    const courses = await courseService.getAllCourses();
-    return res.json(courses);
+    const { id } = req.params;
+
+    const course = await courseService.getCourseById(id);
+
+    if (!course) {
+      return res.status(404).json({ message: "Curso no encontrado" });
+    }
+
+    return res.json(course);
   } catch (error) {
-    console.error("Get courses error:", error);
+    console.error("Get course by id error:", error);
     return res.status(500).json({ message: "Error del servidor" });
   }
 }
 
 module.exports = {
+  getPublishedCourses,
+  getAllCourses,
   createCourse,
-  getCourses,
+  getCourseById,
 };

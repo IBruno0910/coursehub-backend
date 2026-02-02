@@ -24,18 +24,14 @@ model User {
 
 
 model Course {
-  id          String   @id @default(uuid())
+  id          Int      @id @default(autoincrement())
   title       String
   description String
   published   Boolean  @default(false)
+  authorId    Int
+  author      User     @relation(fields: [authorId], references: [id])
   createdAt   DateTime @default(now())
-
-  authorId String
-  author   User   @relation(fields: [authorId], references: [id])
 }
 
-enum Role {
-  USER
-  ADMIN
-}
+
 

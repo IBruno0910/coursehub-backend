@@ -1,19 +1,26 @@
 const express = require("express");
-const courseController = require("../controllers/course.controller");
+const {
+  getPublishedCourses,
+  getAllCourses,
+  createCourse,
+  getCourseById,
+} = require("../controllers/course.controller");
+
 const authMiddleware = require("../middlewares/auth.middleware");
 const isAdminMiddleware = require("../middlewares/isAdmin.middleware");
 
 const router = express.Router();
 
-// Público
-router.get("/", courseController.getCourses);
+// Público → cursos publicados
+router.get("/", getPublishedCourses);
 
-// Privado (solo admin)
-router.post(
-  "/",
-  authMiddleware,
-  isAdminMiddleware,
-  courseController.createCourse
-);
+// Público → detalle de curso
+router.get("/:id", getCourseById);
+
+// Admin → ver todos
+router.get("/admin", authMiddleware, isAdminMiddleware, getAllCourses);
+
+// Admin → crear curso
+router.post("/", authMiddleware, isAdminMiddleware, createCourse);
 
 module.exports = router;
