@@ -62,9 +62,38 @@ async function getCourseById(req, res) {
   }
 }
 
+async function updateCourse(req, res) {
+  try {
+    const { id } = req.params;
+    const { title, description, published } = req.body;
+
+    if (!title && !description && published === undefined) {
+      return res.status(400).json({ message: "Nada para actualizar" });
+    }
+
+    const updatedCourse = await courseService.updateCourse(id, {
+      title,
+      description,
+      published,
+    });
+
+    return res.json(updatedCourse);
+  } catch (error) {
+    console.error("Update course error:", error);
+
+    if (error.code === "P2025") {
+      return res.status(404).json({ message: "Curso no encontrado" });
+    }
+
+    return res.status(500).json({ message: "Error del servidor" });
+  }
+}
+
+
 module.exports = {
   getPublishedCourses,
   getAllCourses,
   createCourse,
   getCourseById,
+  updateCourse,
 };

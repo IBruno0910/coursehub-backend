@@ -49,11 +49,20 @@ async function getCourseById(id) {
   });
 }
 
+async function updateCourse(id, data) {
+  return prisma.course.update({
+    where: { id },
+    data,
+  });
+}
+
+
 module.exports = {
   createCourse,
   getPublishedCourses,
   getAllCourses,
   getCourseById,
+  updateCourse,
 };
 
 

@@ -4,6 +4,7 @@ const {
   getAllCourses,
   createCourse,
   getCourseById,
+  updateCourse,
 } = require("../controllers/course.controller");
 
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -22,5 +23,9 @@ router.get("/admin", authMiddleware, isAdminMiddleware, getAllCourses);
 
 // Admin → crear curso
 router.post("/", authMiddleware, isAdminMiddleware, createCourse);
+
+// Admin → actualizar curso
+router.put("/:id", authMiddleware, isAdminMiddleware, updateCourse);
+
 
 module.exports = router;
