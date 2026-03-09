@@ -24,14 +24,43 @@ model User {
 
 
 model Course {
-  id          Int      @id @default(autoincrement())
+  id          String    @id @default(uuid())
   title       String
   description String
-  published   Boolean  @default(false)
+  published   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
   authorId    Int
-  author      User     @relation(fields: [authorId], references: [id])
-  createdAt   DateTime @default(now())
+  author      User      @relation(fields: [authorId], references: [id])
+
+  sections    Section[]
 }
 
 
+model Section {
+  id        String   @id @default(uuid())
+  title     String
+  order     Int
 
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  lessons   Lesson[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([courseId, order])
+}
+
+model Lesson {
+  id        String   @id @default(uuid())
+  title     String
+  content   String?
+  videoUrl  String?
+  order     Int
+
+  sectionId String
+  section   Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}

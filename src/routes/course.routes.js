@@ -2,9 +2,10 @@ const express = require("express");
 const {
   getPublishedCourses,
   getAllCourses,
-  createCourse,
   getCourseById,
+  createCourse,
   updateCourse,
+  deleteCourse,
 } = require("../controllers/course.controller");
 
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -15,17 +16,19 @@ const router = express.Router();
 // Público → cursos publicados
 router.get("/", getPublishedCourses);
 
-// Público → detalle de curso
-router.get("/:id", getCourseById);
-
 // Admin → ver todos
-router.get("/admin", authMiddleware, isAdminMiddleware, getAllCourses);
+router.get("/admin/all", authMiddleware, isAdminMiddleware, getAllCourses);
 
 // Admin → crear curso
 router.post("/", authMiddleware, isAdminMiddleware, createCourse);
 
 // Admin → actualizar curso
-router.put("/:id", authMiddleware, isAdminMiddleware, updateCourse);
+router.patch("/:id", authMiddleware, isAdminMiddleware, updateCourse);
 
+// Admin → eliminar curso
+router.delete("/:id", authMiddleware, isAdminMiddleware, deleteCourse);
+
+// Público → curso por id (siempre al final)
+router.get("/:id", getCourseById);
 
 module.exports = router;

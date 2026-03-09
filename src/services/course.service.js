@@ -56,13 +56,61 @@ async function updateCourse(id, data) {
   });
 }
 
+async function getPublishedCoursesPaginated(page = 1, limit = 10) {
+  const skip = (page - 1) * limit;
+
+  const [courses, total] = await Promise.all([
+    prisma.course.findMany({
+      where: { published: true },
+      include: {
+        author: {
+          select: {
+            id: true,
+            email: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.course.count({
+      where: { published: true },
+    }),
+  ]);
+
+  return {
+    data: courses,
+    meta: {
+      total,
+      page,
+      lastPage: Math.ceil(total / limit),
+    },
+  };
+}
+
+async function deleteCourse(id) {
+  return prisma.course.delete({
+    where: { id },
+  });
+}
+
+async function getCourseByIdRaw(id) {
+  return prisma.course.findUnique({
+    where: { id },
+  });
+}
+
 
 module.exports = {
   createCourse,
   getPublishedCourses,
   getAllCourses,
   getCourseById,
+  getCourseByIdRaw,
   updateCourse,
+  getPublishedCoursesPaginated,
+  deleteCourse,
 };
 
 
