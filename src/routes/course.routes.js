@@ -6,6 +6,7 @@ const {
   createCourse,
   updateCourse,
   deleteCourse,
+  getCourseFull,
 } = require("../controllers/course.controller");
 
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -30,5 +31,7 @@ router.delete("/:id", authMiddleware, isAdminMiddleware, deleteCourse);
 
 // Público → curso por id (siempre al final)
 router.get("/:id", getCourseById);
+
+router.get("/:id/full", getCourseFull);
 
 module.exports = router;

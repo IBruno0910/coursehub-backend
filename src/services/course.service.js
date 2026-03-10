@@ -101,6 +101,21 @@ async function getCourseByIdRaw(id) {
   });
 }
 
+async function getCourseFull(courseId) {
+  return prisma.course.findUnique({
+    where: { id: courseId },
+    include: {
+      sections: {
+        orderBy: { order: "asc" },
+        include: {
+          lessons: {
+            orderBy: { order: "asc" }
+          }
+        }
+      }
+    }
+  });
+}
 
 module.exports = {
   createCourse,
@@ -111,6 +126,7 @@ module.exports = {
   updateCourse,
   getPublishedCoursesPaginated,
   deleteCourse,
+  getCourseFull
 };
 
 

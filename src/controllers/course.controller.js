@@ -125,6 +125,26 @@ async function deleteCourse(req, res) {
   }
 }
 
+async function getCourseFull(req, res) {
+  try {
+    const { id } = req.params;
+
+    const course = await courseService.getCourseFull(id);
+
+    if (!course) {
+      return res.status(404).json({
+        message: "Course not found"
+      });
+    }
+
+    res.json(course);
+  } catch (error) {
+    console.error("Get full course error:", error);
+    res.status(500).json({
+      message: "Error getting course"
+    });
+  }
+}
 
 
 module.exports = {
@@ -134,4 +154,5 @@ module.exports = {
   getCourseById,
   updateCourse,
   deleteCourse,
+  getCourseFull
 };
