@@ -17,6 +17,7 @@ app.use("/api/sections", require("./routes/section.routes"));
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/enrollments", require("./routes/enrollment.routes"));
 app.use("/api/progress", progressRoutes);
+app.use("/api/dashboard", require("./routes/dashboard.routes"));
 
 app.get("/", (req, res) => {
   res.json({ message: "API CourseHub funcionando 🚀" });

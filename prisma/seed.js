@@ -33,8 +33,10 @@ async function main() {
   });
 
   // Course
-  const course = await prisma.course.create({
-    data: {
+  const course = await prisma.course.upsert({
+    where: { title: "Curso Backend Completo" },
+    update: {},
+    create: {
       title: "Curso Backend Completo",
       description: "Node.js + Prisma + PostgreSQL",
       published: true,
