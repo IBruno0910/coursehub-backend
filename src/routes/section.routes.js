@@ -3,6 +3,7 @@ const {
   createSection,
   getSectionsByCourse,
   deleteSection,
+  updateSection,
 } = require("../controllers/section.controller");
 
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -15,6 +16,9 @@ router.get("/course/:courseId", getSectionsByCourse);
 
 // Admin → crear sección
 router.post("/", authMiddleware, isAdminMiddleware, createSection);
+
+// Admin → actualizar sección
+router.patch("/:id", authMiddleware, isAdminMiddleware, updateSection);
 
 // Admin → eliminar sección
 router.delete("/:id", authMiddleware, isAdminMiddleware, deleteSection);

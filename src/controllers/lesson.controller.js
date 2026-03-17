@@ -45,8 +45,37 @@ async function deleteLesson(req, res) {
   }
 }
 
+async function updateLesson(req, res) {
+  try {
+    const { id } = req.params;
+    const { title, content, videoUrl, order } = req.body;
+
+    if (!title && !content && !videoUrl && order === undefined) {
+      return res.status(400).json({ message: "Nada para actualizar" });
+    }
+
+    const updatedLesson = await lessonService.updateLesson(id, {
+      title,
+      content,
+      videoUrl,
+      order,
+    });
+
+    return res.json(updatedLesson);
+  } catch (error) {
+    console.error("Update lesson error:", error);
+
+    if (error.code === "P2025") {
+      return res.status(404).json({ message: "Lección no encontrada" });
+    }
+
+    return res.status(500).json({ message: "Error del servidor" });
+  }
+}
+
 module.exports = {
   createLesson,
   getLessonsBySection,
   deleteLesson,
+  updateLesson,
 };

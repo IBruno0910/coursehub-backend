@@ -2,7 +2,11 @@ const prisma = require("../config/prisma");
 
 async function createCourse(data) {
   return prisma.course.create({
-    data,
+    data: {
+      title: data.title,
+      description: data.description,
+      authorId: data.authorId
+    }
   });
 }
 
@@ -57,35 +61,29 @@ async function updateCourse(id, data) {
 }
 
 async function getPublishedCoursesPaginated(page = 1, limit = 10) {
+
   const skip = (page - 1) * limit;
 
   const [courses, total] = await Promise.all([
     prisma.course.findMany({
-      where: { published: true },
-      include: {
-        author: {
-          select: {
-            id: true,
-            email: true,
-          },
-        },
+      where: {
+        published: true
       },
-      orderBy: { createdAt: "desc" },
       skip,
-      take: limit,
+      take: limit
     }),
     prisma.course.count({
-      where: { published: true },
-    }),
+      where: {
+        published: true
+      }
+    })
   ]);
 
   return {
-    data: courses,
-    meta: {
-      total,
-      page,
-      lastPage: Math.ceil(total / limit),
-    },
+    courses,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit)
   };
 }
 

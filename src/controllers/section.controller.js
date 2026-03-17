@@ -50,8 +50,35 @@ async function deleteSection(req, res) {
   }
 }
 
+async function updateSection(req, res) {
+  try {
+    const { id } = req.params;
+    const { title, order } = req.body;
+
+    if (!title && order === undefined) {
+      return res.status(400).json({ message: "Nada para actualizar" });
+    }
+
+    const updatedSection = await sectionService.updateSection(id, {
+      title,
+      order,
+    });
+
+    return res.json(updatedSection);
+  } catch (error) {
+    console.error("Update section error:", error);
+
+    if (error.code === "P2025") {
+      return res.status(404).json({ message: "Sección no encontrada" });
+    }
+
+    return res.status(500).json({ message: "Error del servidor" });
+  }
+}
+
 module.exports = {
   createSection,
   getSectionsByCourse,
   deleteSection,
+  updateSection,
 };

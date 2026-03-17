@@ -19,21 +19,23 @@ model User {
   role      Role     @default(USER)
   createdAt DateTime @default(now())
 
-  courses   Course[]
+  courses      Course[]
+  enrollments  Enrollment[]
+  progress Progress[]
 }
 
 
 model Course {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   title       String
-  description String
-  published   Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-
+  description String?
+  published   Boolean  @default(false)
   authorId    Int
-  author      User      @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
 
+  author      User      @relation(fields: [authorId], references: [id])
   sections    Section[]
+  enrollments Enrollment[]
 }
 
 
@@ -63,4 +65,31 @@ model Lesson {
   section   Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+
+  progress Progress[]
+}
+
+model Enrollment {
+  id        String   @id @default(uuid())
+  userId    Int
+  courseId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
+}
+
+model Progress {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  lessonId  String
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  lesson Lesson @relation(fields: [lessonId], references: [id])
+
+  @@unique([userId, lessonId])
 }

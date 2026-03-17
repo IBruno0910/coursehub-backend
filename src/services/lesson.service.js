@@ -25,8 +25,16 @@ async function deleteLesson(id) {
   });
 }
 
+async function updateLesson(id, data) {
+  return prisma.lesson.update({
+    where: { id },
+    data,
+  });
+}
+
 module.exports = {
   createLesson,
   getLessonsBySection,
   deleteLesson,
+  updateLesson,
 };

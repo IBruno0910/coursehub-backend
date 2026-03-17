@@ -23,8 +23,16 @@ async function deleteSection(id) {
   });
 }
 
+async function updateSection(id, data) {
+  return prisma.section.update({
+    where: { id },
+    data,
+  });
+}
+
 module.exports = {
   createSection,
   getSectionsByCourse,
   deleteSection,
+  updateSection,
 };

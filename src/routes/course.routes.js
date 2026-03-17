@@ -29,9 +29,10 @@ router.patch("/:id", authMiddleware, isAdminMiddleware, updateCourse);
 // Admin → eliminar curso
 router.delete("/:id", authMiddleware, isAdminMiddleware, deleteCourse);
 
+// curso completo
+router.get("/:id/full", getCourseFull);
+
 // Público → curso por id (siempre al final)
 router.get("/:id", getCourseById);
-
-router.get("/:id/full", getCourseFull);
 
 module.exports = router;
