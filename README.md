@@ -55,7 +55,7 @@ prisma/
 ├── migrations/
 ├── schema.prisma
 └── seed.js
-
+```
 ------------------------------------------------------------------------
 
 ## 🚀 Instalación y ejecución
