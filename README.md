@@ -41,10 +41,20 @@ backend.
 
 Estructura basada en separación por capas:
 
-src/ ├── config/ ├── controllers/ ├── services/ ├── routes/ ├──
-middlewares/ ├── app.js └── server.js
+```bash
+src/
+├── config/
+├── controllers/
+├── middlewares/
+├── routes/
+├── services/
+├── app.js
+└── server.js
 
-prisma/ ├── schema.prisma ├── migrations/ └── seed.js
+prisma/
+├── migrations/
+├── schema.prisma
+└── seed.js
 
 ------------------------------------------------------------------------
 
