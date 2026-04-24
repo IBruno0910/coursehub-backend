@@ -3,8 +3,7 @@
 API REST para una plataforma de cursos online (LMS), desarrollada con
 Node.js, Express, PostgreSQL y Prisma.
 
-Permite autenticación con JWT, gestión de cursos, secciones y lecciones,
-inscripción a cursos, seguimiento de progreso y dashboard del usuario.
+Incluye autenticación con JWT, gestión de cursos, secciones y lecciones, inscripciones, seguimiento de progreso, dashboard de usuario, reviews y rating de cursos.
 
 ------------------------------------------------------------------------
 
@@ -16,7 +15,8 @@ los usuarios pueden:
 -   Registrarse y autenticarse
 -   Inscribirse en cursos
 -   Consumir contenido estructurado (secciones + lecciones)
--   Marcar progreso
+-   Marcar progreso de aprendizaje
+-   Dejar reviews y calificaciones
 -   Visualizar estadísticas en su dashboard
 
 El proyecto está diseñado siguiendo buenas prácticas de arquitectura
@@ -34,6 +34,7 @@ backend.
 -   bcrypt
 -   dotenv
 -   CORS
+-   Zod (validación)
 
 ------------------------------------------------------------------------
 
@@ -47,6 +48,7 @@ src/
 ├── controllers/
 ├── middlewares/
 ├── routes/
+├── schemas/
 ├── services/
 ├── app.js
 └── server.js
@@ -139,6 +141,10 @@ GET /api/progress/course/:courseId
 
 Dashboard: GET /api/dashboard/me
 
+Reviews & Rating: POST /api/reviews
+GET /api/reviews/course/:courseId
+GET /api/reviews/course/:courseId/rating
+
 ------------------------------------------------------------------------
 
 ## 🧪 Testing
@@ -146,7 +152,7 @@ Dashboard: GET /api/dashboard/me
 Podés usar Insomnia o Postman.
 
 Flujo: Login → Crear curso → Crear section → Crear lesson → Enroll →
-Progress → Dashboard
+Progress → Crear review → Ver rating → Dashboard
 
 ------------------------------------------------------------------------
 
@@ -166,12 +172,11 @@ datos.
 
 ## 🔮 Mejoras futuras
 
--   Reviews
--   Búsqueda avanzada
--   Upload
--   Tests
--   Swagger
--   Deploy
+-   Upload de contenido (videos/archivos)
+-   Tests automatizados (Jest)
+-   Documentación con Swagger
+-   Sistema de pagos / suscripciones
+-   Deploy en producción
 
 ------------------------------------------------------------------------
 
