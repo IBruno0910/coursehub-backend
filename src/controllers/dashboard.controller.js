@@ -1,6 +1,6 @@
 const dashboardService = require("../services/dashboard.service");
 
-async function getMyDashboard(req, res) {
+async function getMyDashboard(req, res, next) {
   try {
     const userId = req.user.id;
 
@@ -8,8 +8,7 @@ async function getMyDashboard(req, res) {
 
     return res.json(dashboard);
   } catch (error) {
-    console.error("Get dashboard error:", error);
-    return res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 }
 

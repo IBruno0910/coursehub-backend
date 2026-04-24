@@ -1,7 +1,7 @@
 const sectionService = require("../services/section.service");
 
 // Admin
-async function createSection(req, res) {
+async function createSection(req, res, next) {
   try {
     const { title, order, courseId } = req.body;
 
@@ -17,13 +17,12 @@ async function createSection(req, res) {
 
     return res.status(201).json(section);
   } catch (error) {
-    console.error("Create section error:", error);
-    return res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 }
 
 // Público
-async function getSectionsByCourse(req, res) {
+async function getSectionsByCourse(req, res, next) {
   try {
     const { courseId } = req.params;
 
@@ -31,13 +30,12 @@ async function getSectionsByCourse(req, res) {
 
     return res.json(sections);
   } catch (error) {
-    console.error("Get sections error:", error);
-    return res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 }
 
 // Admin
-async function deleteSection(req, res) {
+async function deleteSection(req, res, next) {
   try {
     const { id } = req.params;
 
@@ -45,12 +43,11 @@ async function deleteSection(req, res) {
 
     return res.json({ message: "Sección eliminada" });
   } catch (error) {
-    console.error("Delete section error:", error);
-    return res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 }
 
-async function updateSection(req, res) {
+async function updateSection(req, res, next) {
   try {
     const { id } = req.params;
     const { title, order } = req.body;
@@ -72,7 +69,7 @@ async function updateSection(req, res) {
       return res.status(404).json({ message: "Sección no encontrada" });
     }
 
-    return res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 }
 

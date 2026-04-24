@@ -1,6 +1,6 @@
 const lessonService = require("../services/lesson.service");
 
-async function createLesson(req, res) {
+async function createLesson(req, res, next) {
   try {
     const { title, content, videoUrl, order, sectionId } = req.body;
 
@@ -14,12 +14,11 @@ async function createLesson(req, res) {
 
     return res.status(201).json(lesson);
   } catch (error) {
-    console.error("Create lesson error:", error);
-    return res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 }
 
-async function getLessonsBySection(req, res) {
+async function getLessonsBySection(req, res, next) {
   try {
     const { sectionId } = req.params;
 
@@ -27,12 +26,11 @@ async function getLessonsBySection(req, res) {
 
     return res.json(lessons);
   } catch (error) {
-    console.error("Get lessons error:", error);
-    return res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 }
 
-async function deleteLesson(req, res) {
+async function deleteLesson(req, res, next) {
   try {
     const { id } = req.params;
 
@@ -40,12 +38,11 @@ async function deleteLesson(req, res) {
 
     return res.json({ message: "Lesson eliminada correctamente" });
   } catch (error) {
-    console.error("Delete lesson error:", error);
-    return res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 }
 
-async function updateLesson(req, res) {
+async function updateLesson(req, res, next) {
   try {
     const { id } = req.params;
     const { title, content, videoUrl, order } = req.body;
@@ -69,7 +66,7 @@ async function updateLesson(req, res) {
       return res.status(404).json({ message: "Lección no encontrada" });
     }
 
-    return res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 }
 

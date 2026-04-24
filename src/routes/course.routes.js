@@ -9,6 +9,12 @@ const {
   getCourseFull,
 } = require("../controllers/course.controller");
 
+const validate = require("../middlewares/validate.middleware");
+const {
+  createCourseSchema,
+  updateCourseSchema,
+} = require("../schemas/course.schema");
+
 const authMiddleware = require("../middlewares/auth.middleware");
 const isAdminMiddleware = require("../middlewares/isAdmin.middleware");
 
@@ -21,10 +27,22 @@ router.get("/", getPublishedCourses);
 router.get("/admin/all", authMiddleware, isAdminMiddleware, getAllCourses);
 
 // Admin → crear curso
-router.post("/", authMiddleware, isAdminMiddleware, createCourse);
+router.post(
+  "/",
+  authMiddleware,
+  isAdminMiddleware,
+  validate(createCourseSchema),
+  createCourse
+);
 
 // Admin → actualizar curso
-router.patch("/:id", authMiddleware, isAdminMiddleware, updateCourse);
+router.patch(
+  "/:id",
+  authMiddleware,
+  isAdminMiddleware,
+  validate(updateCourseSchema),
+  updateCourse
+);
 
 // Admin → eliminar curso
 router.delete("/:id", authMiddleware, isAdminMiddleware, deleteCourse);

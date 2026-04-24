@@ -18,9 +18,14 @@ app.use("/api/lessons", lessonRoutes);
 app.use("/api/enrollments", require("./routes/enrollment.routes"));
 app.use("/api/progress", progressRoutes);
 app.use("/api/dashboard", require("./routes/dashboard.routes"));
+app.use("/api/reviews", require("./routes/review.routes"));
 
 app.get("/", (req, res) => {
   res.json({ message: "API CourseHub funcionando 🚀" });
 });
+
+const errorHandler = require("./middlewares/error.middleware");
+
+app.use(errorHandler);
 
 module.exports = app;

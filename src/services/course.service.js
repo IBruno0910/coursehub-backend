@@ -11,9 +11,10 @@ async function createCourse(data) {
 }
 
 async function getPublishedCourses() {
-  return prisma.course.findMany({
+  const courses = await prisma.course.findMany({
     where: { published: true },
     include: {
+      reviews: true,
       author: {
         select: {
           id: true,
@@ -22,6 +23,22 @@ async function getPublishedCourses() {
       },
     },
     orderBy: { createdAt: "desc" },
+  });
+
+  return courses.map((course) => {
+    const totalReviews = course.reviews.length;
+
+    const averageRating =
+      totalReviews === 0
+        ? 0
+        : course.reviews.reduce((acc, r) => acc + r.rating, 0) /
+          totalReviews;
+
+    return {
+      ...course,
+      rating: Number(averageRating.toFixed(1)),
+      totalReviews,
+    };
   });
 }
 
@@ -40,9 +57,10 @@ async function getAllCourses() {
 }
 
 async function getCourseById(id) {
-  return prisma.course.findUnique({
+  const course = await prisma.course.findUnique({
     where: { id },
     include: {
+      reviews: true,
       author: {
         select: {
           id: true,
@@ -51,6 +69,21 @@ async function getCourseById(id) {
       },
     },
   });
+
+  if (!course) return null;
+
+  const totalReviews = course.reviews.length;
+
+  const averageRating =
+    totalReviews === 0
+      ? 0
+      : course.reviews.reduce((acc, r) => acc + r.rating, 0) / totalReviews;
+
+  return {
+    ...course,
+    rating: Number(averageRating.toFixed(1)),
+    totalReviews,
+  };
 }
 
 async function updateCourse(id, data) {
@@ -60,30 +93,71 @@ async function updateCourse(id, data) {
   });
 }
 
-async function getPublishedCoursesPaginated(page = 1, limit = 10) {
-
+async function getPublishedCoursesPaginated(page = 1, limit = 10, search = "") {
   const skip = (page - 1) * limit;
+
+  const where = {
+    published: true,
+    ...(search && {
+      OR: [
+        {
+          title: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        {
+          description: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+      ],
+    }),
+  };
 
   const [courses, total] = await Promise.all([
     prisma.course.findMany({
-      where: {
-        published: true
+      where,
+      include: {
+        reviews: true,
+        author: {
+          select: {
+            id: true,
+            email: true,
+          },
+        },
       },
+      orderBy: { createdAt: "desc" },
       skip,
-      take: limit
+      take: limit,
     }),
-    prisma.course.count({
-      where: {
-        published: true
-      }
-    })
+    prisma.course.count({ where }),
   ]);
 
+  const coursesWithRating = courses.map((course) => {
+    const totalReviews = course.reviews.length;
+
+    const averageRating =
+      totalReviews === 0
+        ? 0
+        : course.reviews.reduce((acc, review) => acc + review.rating, 0) /
+          totalReviews;
+
+    return {
+      ...course,
+      rating: Number(averageRating.toFixed(1)),
+      totalReviews,
+    };
+  });
+
   return {
-    courses,
+    courses: coursesWithRating,
     total,
     page,
-    totalPages: Math.ceil(total / limit)
+    limit,
+    totalPages: Math.ceil(total / limit),
+    search,
   };
 }
 
@@ -100,19 +174,35 @@ async function getCourseByIdRaw(id) {
 }
 
 async function getCourseFull(courseId) {
-  return prisma.course.findUnique({
+  const course = await prisma.course.findUnique({
     where: { id: courseId },
     include: {
+      reviews: true,
       sections: {
         orderBy: { order: "asc" },
         include: {
           lessons: {
-            orderBy: { order: "asc" }
-          }
-        }
-      }
-    }
+            orderBy: { order: "asc" },
+          },
+        },
+      },
+    },
   });
+
+  if (!course) return null;
+
+  const totalReviews = course.reviews.length;
+
+  const averageRating =
+    totalReviews === 0
+      ? 0
+      : course.reviews.reduce((acc, r) => acc + r.rating, 0) / totalReviews;
+
+  return {
+    ...course,
+    rating: Number(averageRating.toFixed(1)),
+    totalReviews,
+  };
 }
 
 module.exports = {

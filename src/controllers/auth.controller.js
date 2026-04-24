@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userService = require("../services/user.service");
 
-async function register(req, res) {
+async function register(req, res, next) {
   console.log("➡️ REGISTER HIT");
   console.log("BODY:", req.body);
   try {
@@ -28,12 +28,11 @@ async function register(req, res) {
       },
     });
   } catch (error) {
-    console.error("Register error:", error);
-    return res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 }
 
-async function login(req, res) {
+async function login(req, res, next) {
   try {
     const { email, password } = req.body;
 
@@ -59,8 +58,7 @@ async function login(req, res) {
 
     return res.json({ token });
   } catch (error) {
-    console.error("Login error:", error);
-    return res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 }
 
